@@ -1,0 +1,41 @@
+[gd_scene load_steps=7 format=3 uid="uid://bcvvvevh62vfq"]
+
+[ext_resource type="Script" path="res://addons/VectorFieldNavigation/examples/unit.gd" id="1_nd542"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_p2swa"]
+friction = 0.0
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_otaef"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_pbmih"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jn7ln"]
+albedo_color = Color(1, 0.160784, 0.294118, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_1hfm6"]
+radial_segments = 12
+rings = 6
+
+[node name="unit" type="RigidBody3D" groups=["unit"]]
+mass = 5.0
+physics_material_override = SubResource("PhysicsMaterial_p2swa")
+lock_rotation = true
+script = ExtResource("1_nd542")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+visible = false
+shape = SubResource("CapsuleShape3D_otaef")
+disabled = true
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_pbmih")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+material_override = SubResource("StandardMaterial3D_jn7ln")
+mesh = SubResource("SphereMesh_1hfm6")
+
+[node name="Timer" type="Timer" parent="."]
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

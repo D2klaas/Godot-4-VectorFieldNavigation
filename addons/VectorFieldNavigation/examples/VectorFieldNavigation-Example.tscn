@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://bq1okk6qaxpfr"]
+[gd_scene load_steps=12 format=3 uid="uid://bq1okk6qaxpfr"]
 
 [ext_resource type="Script" path="res://addons/VectorFieldNavigation/examples/example.gd" id="1_l5mr5"]
 [ext_resource type="Texture2D" uid="uid://3mxy8pc7xvjg" path="res://addons/VectorFieldNavigation/examples/heightmap.png" id="2_d7bo2"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://addons/VectorFieldNavigation/examples/GUI.gd" id="2_gdncv"]
 [ext_resource type="Script" path="res://addons/VectorFieldNavigation/classes/VFNMap.gd" id="4_n068j"]
 [ext_resource type="Environment" uid="uid://m4fyiam5c8q0" path="res://default_env.tres" id="5_rmxyj"]
+[ext_resource type="Script" path="res://addons/VectorFieldNavigation/examples/Portal.gd" id="7_00jh6"]
 
 [sub_resource type="HeightMapShape3D" id="HeightMapShape3D_v1r8j"]
 map_width = 128
@@ -15,6 +16,10 @@ map_data = PackedFloat32Array(3, 6, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_k8nl8"]
 albedo_texture_force_srgb = true
 texture_filter = 0
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_6hq0x"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_r4fcx"]
 
 [node name="VFN Example Scene" type="Node3D"]
 script = ExtResource("1_l5mr5")
@@ -273,6 +278,7 @@ script = ExtResource("4_n068j")
 height_scale = 5.0
 size = Vector2i(128, 128)
 heightmap = ExtResource("2_d7bo2")
+use_heightmap = true
 
 [node name="cam_base" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 64, 0, 64)
@@ -299,6 +305,32 @@ environment = ExtResource("5_rmxyj")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.71446, 0.480756, 0.50835, 0, -0.726551, 0.687113, 0.699676, -0.490915, -0.519092, 0, 15.0457, 0)
+
+[node name="PortalA" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 0.5, 60)
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("7_00jh6")
+portal_end = NodePath("../PortalB")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PortalA"]
+shape = SubResource("BoxShape3D_6hq0x")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="PortalA"]
+mesh = SubResource("BoxMesh_r4fcx")
+
+[node name="PortalB" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 80, 0.5, 44)
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("7_00jh6")
+portal_end = NodePath("../PortalA")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PortalB"]
+shape = SubResource("BoxShape3D_6hq0x")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="PortalB"]
+mesh = SubResource("BoxMesh_r4fcx")
 
 [connection signal="value_changed" from="GUI/MarginContainer2/VBoxContainer/GridContainer/gen_targets" to="GUI" method="_on_gen_targets_value_changed"]
 [connection signal="value_changed" from="GUI/MarginContainer2/VBoxContainer/GridContainer/effort_cutoff" to="GUI" method="_on_effort_cutoff_value_changed"]

@@ -11,6 +11,8 @@ class_name VFNModField
 var dynamic:bool = false
 ## only the highest number get set
 var upmost:bool = false
+## nodes with a field value of < 0.5 cannot be walked on
+var boolean:bool = false
 ##the fields effort value
 var field:PackedFloat32Array
 ## the associated map

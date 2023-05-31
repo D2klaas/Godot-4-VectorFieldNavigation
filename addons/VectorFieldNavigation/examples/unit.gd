@@ -6,6 +6,7 @@ var vf_force:float = 80 + randf_range(-20,20)
 var field:VFNField
 var wiggle_force:float = 15
 var vf_vec:Vector3
+var just_teleported:bool = false
 
 
 func _ready():

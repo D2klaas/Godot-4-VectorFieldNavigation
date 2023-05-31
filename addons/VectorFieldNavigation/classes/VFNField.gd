@@ -20,7 +20,7 @@ var field_mutex:Mutex
 var field_ef:PackedFloat32Array
 var field_final_destination:PackedInt32Array
 var field_target:PackedInt32Array
-var _field_vector:PackedVector3Array
+var _field_vector:PackedVector3Array #working vectorfield
 var field_vector:PackedVector3Array
 var field_open_mask:PackedInt32Array
 
@@ -385,6 +385,9 @@ func calculate():
 				
 				#add static mod fields
 				for mf in static_mod_fields:
+					if mf.boolean and round(mf.field[n_index]) != 1:
+						connection_cache[cache_index + con_index] = -1
+						continue
 					_ef += mf.field[n_index] * field_effort_factor
 				
 				connection_cache[cache_index + con_index] = _ef
@@ -393,6 +396,8 @@ func calculate():
 			
 			# add dynamic mod fields
 			for mf in dynamic_mod_fields:
+				if mf.boolean and round(mf.field[n_index]) != 1:
+					continue
 				ef += mf.field[n_index] * field_effort_factor
 			
 			ef += _ef

@@ -1,6 +1,6 @@
 extends Node3D
 
-## the VFN field to use
+## the VFN field
 var field:VFNField
 
 func _ready():
@@ -20,6 +20,9 @@ func _ready():
 	var map:VFNMap = $VectorMap
 	# init the map from a image
 	map.create_from_image( img )
+	
+	map.add_portal(Vector2i(25,60),Vector2i(80,44))
+	map.add_portal(Vector2i(80,44),Vector2i(25,60))
 	
 	##create a penalty field for edge penalties
 	var penalty_field:VFNModField = map.add_mod_field()
@@ -65,7 +68,7 @@ func _on_button_pressed():
 	field.drop_factor = $GUI.drop_factor
 	field.drop_cutoff = $GUI.drop_cutoff
 	field.field_effort_factor = $GUI.field_effort_factor
-	field.field_penalty_factor = $GUI.field_penalty_factor
+#	field.field_penalty_factor = $GUI.field_penalty_factor
 	
 	field.clear_targets()
 	

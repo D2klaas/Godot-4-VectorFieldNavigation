@@ -6,20 +6,20 @@ Vector field navigation is espacialy usefull for large hordes or particle pathfi
 
 When you have many entities that should navigate to one (or many) targets you can either 
 calculate a path for every entity or group those entities and share one path for all.
-Calculating a path for hundreds of entities can realy hit your performance. Most of the time
-all calculated paths merge into one optimal path, when all the entities march this path and 
-tick of their navpoints they often push each other away from those points. This leads to 
-ugly movements at those choke points. Sure this can be optimized but this comes at an additional
+Calculating a path for hundreds of entities can hit your performance substantially. Most of the time
+all calculated paths merge into one optimal path. When all entities march this path and 
+tick of their navigation points they often push each other away from those points. This leads to 
+ugly movements at choke points. Sure this can be optimized but this comes at an additional
 cost.
 
 Vectorfield navigation (VFN) calculates a navigation solution for all cells (nodes) of a grid based
 map.
 
-This VFN addon implements a planar(2D/3D) solution wich can be used in 3D space. Currently it does not support underpaths, bridges or alike.
-This may be change in future realases, but a real 3D node based solution is more complex and will not be 
-as performant as a "2D" solution.
+This VFN addon implements a planar(2D/3D) solution wich can be used in 3D space. Currently it does not 
+support underpaths, bridges or alike. This may be change in future realases, but a real 3D node based 
+solution is more complex and will not be as performant as a "2D" solution.
 
-Features:
+*Features:*
 * multipy solutions with different modifiers for a single map
 * threaded calculation for stutter free usage
 * map preperation tools heightmaps

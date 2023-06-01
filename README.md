@@ -32,9 +32,11 @@ Download files and add them to your addons folder in your godot project.\
 Enable the plugin in project-settings.
 
 ## Usage
+A short overview
+
 ### map
 Create a VFNMap-node in your scene-tree
-You can use the buildin heightmap or initialize the map via scripting.
+You can use the build-in heightmap or initialize the map via scripting.
 (Have look in the example script)
 
 **!! DO NOT MODIFY THE MAP WHILE CALCULATING A SOLUTION !!** this can result in chrashes
@@ -44,11 +46,103 @@ ModFields modifing the effort to reach a node. Its mostly a penalty for a node l
 ModFields can be static or dynamic. Static ModFields can be cached but dynamic one's not.
 ModFields can be numeric or boolean. Numerics will be added to the effort while booleans will block the access completly.
 
-** modifying the modfield while calcualting a solution can result in undesired results **
+**modifying the modfield while calcualting a solution can result in undesired results**
 
 ## Field
 The VFN-field stores the target-nodes and calculates the field solution and provides methodes to read the movement vector. Each map can have many fields. 
 Each fields has a set of factors to modify the weighting of the calculation (different entities may have different movement penalties).
+
+## DOCS
+
+### VFNMap
+The base data of the navigation map.
+
+**Properties**
+* `field_scale:float = 1`\
+  scale of a map tile\
+  (1.5 means every tile is 1.5 by 1.5)
+
+* height_scale:float = 1`\
+  scale of height\
+  (tiles height is height (0 to 1) multiplied by height_scale
+
+* `size:Vector2i`\
+  dimensions of the map
+
+* draw_debug:bool = false`\
+  wether draw a pointcloud for visual reference
+
+* heightmap:Texture2D`\
+  use this image to initialize the map
+
+* use_heightmap:bool = false`\
+  use the heightmap
+
+**Signals**
+
+* `map_changed`\
+  _emited when the map changed substantially
+  
+* `connections_changed`\
+  _emited when connections changed (cache will be cleared)
+  
+* `nodes_changed`\
+   _emited when nodes changed (cache will be cleared)
+  
+**Methods**
+
+* `init( ) -> void`\
+  initializes the maps data structure\
+  must not be called manually
+
+* `get_node_at( pos:vector2i ) -> VFNNode`\
+  get node-object at index position pos
+
+
+* `create_field( ) -> VFNField`\
+  create field based on this map for calculation solutions
+
+
+* `create_from_image( img:Image )`\
+  initializes this map based on an heightmap image
+
+
+* `add_penalty_height_margin( field:VFNModField, margin:int, strength:float )`\
+  adds penalty to a modfield around slopes and cliffs
+
+
+* `set_height( pos:Vector2i, height:float )`\
+  set nodes height at pos to height (0->1)
+
+
+* `get_height( pos:Vector2i ) -> float`\
+  get nodes height at pos
+
+
+* `add_portal( a:Vector2i, b:Vector2i ) -> VFNConnection`\
+  adds a portal connection from a to b\
+  returns a connection object where you can set effort etc.
+
+
+* `disable_node( pos:Vector2i )`\
+  disables the node at pos\
+  The node will be excluded when calculating
+
+
+* `enable_node( pos:Vector2i )`\
+  enables the node at pos\
+  The node will be included when calculating
+
+
+* update_debug_mesh( field:VFNField=null )`\
+  redraws the debug mesh\
+  when a field is given, effort will be shown with color
+
+
+* `add_mod_field() -> VFNModField`\
+  adds a modfield to the map\
+  see modfields for further explanations
+
 
 
 

@@ -2,7 +2,7 @@
 
 **CURRENTLY IN WIP STATE, comments and suggestions appreciated !**
 
-This addon add's another pathfinding method besides astar and navmesh-navigation.
+This addon add's another pathfinding method besides astar and navmesh-navigation to Godot 4.
 
 Vector field navigation is espacialy usefull for large hordes or particle pathfinding.
 
@@ -37,7 +37,7 @@ Enable the plugin in project-settings.
 ## Usage
 A short overview
 
-### map
+### Map
 Create a VFNMap-node in your scene-tree
 You can use the build-in heightmap or initialize the map via scripting.
 (Have look in the example script)

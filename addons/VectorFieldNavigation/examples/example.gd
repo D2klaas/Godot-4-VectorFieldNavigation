@@ -18,9 +18,10 @@ func _ready():
 	var img:Image = %OrgMap.texture.get_image()
 	# get the map
 	var map:VFNMap = $VectorMap
-	# init the map from a image
+	# init the map from an image
 	map.create_from_image( img )
 	
+	#add portals between two fields (both directions)
 	map.add_portal(Vector2i(25,60),Vector2i(80,44))
 	map.add_portal(Vector2i(80,44),Vector2i(25,60))
 	
@@ -68,7 +69,6 @@ func _on_button_pressed():
 	field.drop_factor = $GUI.drop_factor
 	field.drop_cutoff = $GUI.drop_cutoff
 	field.field_effort_factor = $GUI.field_effort_factor
-#	field.field_penalty_factor = $GUI.field_penalty_factor
 	
 	field.clear_targets()
 	
@@ -86,8 +86,7 @@ func _on_button_pressed():
 		field.add_target( Vector2i(105,15) )
 	
 	field.calculate_threaded( self._on_calculated.bind(field) )
-#	field.init_fields()
-#	field.calculate(  )
+
 
 
 func _on_calculated( field ):

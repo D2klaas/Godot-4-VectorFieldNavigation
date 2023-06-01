@@ -257,6 +257,7 @@ func calculate():
 	var ny:int
 	var ef:float
 	var _ef:float
+	var c_node_ef:float
 	var c_node:VFNNode
 	var n_node:VFNNode
 	var dist:float
@@ -304,11 +305,20 @@ func calculate():
 		field_open_mask[c_index] = 0
 		c_node = map.nodes[c_index]
 		
+		# init cache if not present
 		cache_index = connection_cache_index[c_index]
 		if cache_index == -1:
 			cache_index = connection_cache_current_index
 			connection_cache_index[c_index] = connection_cache_current_index
 			connection_cache_current_index += c_node.connections.size()
+		
+		# dynamic mod field penaltys for this c_node
+		c_node_ef = 0
+		for mf in dynamic_mod_fields:
+			if mf.boolean and round(mf.field[c_index]) != 1:
+				continue
+			c_node_ef += mf.field[c_index] * field_effort_factor
+		
 		
 		con_index = -1
 		for c in c_node.connections:
@@ -334,7 +344,7 @@ func calculate():
 				continue
 			
 			#calculate effort
-			ef = field_ef[c_index]
+			ef = field_ef[c_index] + c_node_ef
 			if _ef == 0:
 				#cache is empty ... calculate effort
 				cached += 1
@@ -385,24 +395,18 @@ func calculate():
 				
 				#add static mod fields
 				for mf in static_mod_fields:
-					if mf.boolean and round(mf.field[n_index]) != 1:
+					if mf.boolean and round(mf.field[c_index]) != 1:
 						connection_cache[cache_index + con_index] = -1
 						continue
-					_ef += mf.field[n_index] * field_effort_factor
+					_ef += mf.field[c_index] * field_effort_factor
 				
 				connection_cache[cache_index + con_index] = _ef
 			else:
 				from_cache += 1
 			
-			# add dynamic mod fields
-			for mf in dynamic_mod_fields:
-				if mf.boolean and round(mf.field[n_index]) != 1:
-					continue
-				ef += mf.field[n_index] * field_effort_factor
-			
 			ef += _ef
 			
-			#point to current node is next node effort is smaller
+			#next node to current node effort is smaller
 			if ef < field_ef[n_index] and ef < effort_cutoff:
 				field_ef[n_index] = ef
 				field_target[n_index] = c_index

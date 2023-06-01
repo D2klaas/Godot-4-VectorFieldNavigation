@@ -230,24 +230,6 @@ func set_height( pos:Vector2i, height:float ):
 	emit_signal("nodes_changed")
 
 
-## set effort on node at x,y
-#func set_effort( pos:Vector2i, effort:float ):
-#	nodes[pos.x*size.x+pos.y].effort = effort
-#	emit_signal("nodes_changed")
-
-
-## add effort on node at x,y
-#func add_effort( pos:Vector2i, effort:float ):
-#	nodes[pos.x*size.x+pos.y].effort += effort
-#	emit_signal("nodes_changed")
-
-
-### set penalty on node at x,y
-#func set_penalty( pos:Vector2i, p:float ):
-#	nodes[pos.x*size.x+pos.y].penalty = max(nodes[pos.x*size.x+pos.y].penalty,p)
-#	emit_signal("nodes_changed")
-
-
 ## get the height off node at x,y
 func get_height( pos:Vector2i ) -> float:
 	return nodes[pos.x*size.x+pos.y].height

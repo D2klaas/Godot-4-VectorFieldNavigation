@@ -1,8 +1,8 @@
 # Godot-4-VectorFieldNavigation
 
-**currently in WIP state, comments and suggestions appreciated**
+**CURRENTLY IN WIP STATE, comments and suggestions appreciated !**
 
-This addon add's another pathfinding system besides astar and navmesh-navigation.
+This addon add's another pathfinding method besides astar and navmesh-navigation.
 
 Vector field navigation is espacialy usefull for large hordes or particle pathfinding.
 
@@ -15,7 +15,8 @@ ugly movements at choke points. Sure this can be optimized but this comes at an 
 cost.
 
 Vectorfield navigation (VFN) calculates a navigation solution for all cells (nodes) of a grid based
-map.
+map. Therefor i doesn't matter where the entity is positioned, there is allways a path to a target and
+therefor the entity dont have to walk predefined waypoints.
 
 This VFN addon implements a planar(2D/3D) solution wich can be used in 3D space. Currently it does not 
 support underpaths, bridges or alike. This may be change in future realases, but a real 3D node based 

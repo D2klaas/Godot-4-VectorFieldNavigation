@@ -76,12 +76,6 @@ var field_effort_factor:float = 1 :
 		field_effort_factor = value
 		connection_cache_current_index = -1
 
-#var field_penalty_factor:float = 1 :
-#	set(value):
-#		if value == field_penalty_factor:
-#			return
-#		field_penalty_factor = value
-#		connection_cache_current_index = -1
 
 
 signal thread_finished
@@ -502,6 +496,7 @@ func get_penalty_heatmap() -> Image:
 	var ef:float
 	for n in map.nodes:
 		c = Color.WHITE
+		# todo
 #		c.v = n.penalty/20
 		img.set_pixelv( n.pos, c )
 	return img

@@ -1,5 +1,7 @@
 # Godot-4-VectorFieldNavigation
 
+**currently in WIP state, comments and suggestions appreciated**
+
 This addon add's another pathfinding system besides astar and navmesh-navigation.
 
 Vector field navigation is espacialy usefull for large hordes or particle pathfinding.
@@ -62,20 +64,20 @@ The base data of the navigation map.
   scale of a map tile\
   (1.5 means every tile is 1.5 by 1.5)
 
-* height_scale:float = 1`\
+* `height_scale:float = 1`\
   scale of height\
   (tiles height is height (0 to 1) multiplied by height_scale
 
 * `size:Vector2i`\
   dimensions of the map
 
-* draw_debug:bool = false`\
+* `draw_debug:bool = false`\
   wether draw a pointcloud for visual reference
 
-* heightmap:Texture2D`\
+* `heightmap:Texture2D`\
   use this image to initialize the map
 
-* use_heightmap:bool = false`\
+* `use_heightmap:bool = false`\
   use the heightmap
 
 **Signals**
@@ -134,7 +136,7 @@ The base data of the navigation map.
   The node will be included when calculating
 
 
-* update_debug_mesh( field:VFNField=null )`\
+* `update_debug_mesh( field:VFNField=null )`\
   redraws the debug mesh\
   when a field is given, effort will be shown with color
 
@@ -144,6 +146,126 @@ The base data of the navigation map.
   see modfields for further explanations
 
 
+### VFNField
+Field for calculating solutions based on a VFNMap.
+
+**Properties**
+* `effort_cutoff:float`\
+  stop calculation further when final effort is higher as this number
+
+* `climb_factor:float = 0.0`\
+  additional penalty factor for upward steepness
+
+* `climb_cutoff:float = `\
+  the cutoff in upward direction, if a connection is more steep than this, it wont be used
+
+* `drop_factor:float = 0.0`\
+  additional penalty factor for downward steepness
+
+* `drop_cutoff:float`\
+  the cutoff in downward direction, if a connection is more steep than this, it wont be used
 
 
+* `field_effort_factor:float = 1`\
+  additionaly penalty factor on modfields
+
+
+**Signals**
+
+* `calculated`\
+  the calculation has finished succesfully
+  
+  
+**Methods**
+
+* `add_target( pos:Vector2i, data=null ) -> VFNTarget`\
+  adds a new target at pos
+
+
+* `clear_targets()`\
+  remove all targets
+
+
+* `remove_target( pos )`\
+  remove target at pos Vector2i or VFNTarget
+
+
+* `remove_targets( destinations:Array[Vector2i]`\
+  remove targets at positions
+
+
+* `calculate_threaded( callback = null, kill_existing_thread:bool=true )`\
+  starts threaded calculation\
+  calls callback after finish when successful
+
+
+* `get_vector_world( global_position:Vector3, clamp:bool=true ) -> Vector3`\
+  gets movement vector for world position global_position, clamp true will clamp position to the map
+
+
+* `get_vector_smooth_world( global_position:Vector3, clamp:bool=true  ) -> Vector3`\
+  gets movement vector for world position global_position, clamp true will clamp position to the map
+  will smooth vector with neighbouring fields
+
+* `get_effort_heatmap() -> Image`\
+  visual representation of effort for debug purpose
+
+
+* `get_penalty_heatmap() -> Image`\
+  visual representation of penalties for debug purpose\
+  not yet implemented
+
+
+### VFNModField
+Field for modifing pathfinding effort.
+
+**Properties**
+* `dynamic:bool = false`\
+  field is dynamic and will not be cached
+
+* `upmost:bool = false`\
+  when setting penalty only the heighest number will reside
+
+* `boolean:bool = false`\
+  this field is boolean, if value is higher then 0.5 node is enabled else node is disabled
+
+**Methods**
+
+* `clear()`\
+  clears the field completly
+
+
+* `set_value( pos:Vector2i, value:float )`\
+  sets penalty value on pos
+
+
+* `get_value( pos:Vector2i )`\
+  gets penalty value on pos
+
+
+* `fade( f:float )`\
+  fades every value in the field, multiplys the value by f
+
+
+* `blur_fade( f:float )`\
+  **not implemented yet**
+  fades every value in the field, multiplys the value by f\
+  blurs the neighbouring fields
+
+
+### VFNConnection
+Connection between fields
+
+**Properties**
+* `node_b:VFNNode`\
+  the other node
+
+* `effort:float = 0`\
+  effort to walk this connection (mostly the distance)
+
+* `steepness:float = 0`\
+  the connections steepness
+
+* `disabled:bool = false`\
+  connections is disabled or not
 

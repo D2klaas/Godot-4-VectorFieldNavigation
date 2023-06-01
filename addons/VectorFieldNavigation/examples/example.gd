@@ -11,7 +11,6 @@ func _ready():
 	$GUI.drop_factor = 4.1
 	$GUI.drop_cutoff = 0.2
 	$GUI.field_effort_factor = 1.0
-	$GUI.field_penalty_factor = 6.0
 	
 	# wait first rendered frame to get the image
 	await get_tree().process_frame

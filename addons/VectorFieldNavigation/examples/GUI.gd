@@ -42,11 +42,11 @@ var field_effort_factor:float :
 		%_field_effort_factor.text = str(value)
 		%field_effort_factor.value = value
 
-var field_penalty_factor:float :
-	set(value):
-		field_penalty_factor = value
-		%_field_penalty_factor.text = str(value)
-		%field_penalty_factor.value = value
+#var field_penalty_factor:float :
+#	set(value):
+#		field_penalty_factor = value
+#		%_field_penalty_factor.text = str(value)
+#		%field_penalty_factor.value = value
 
 
 
@@ -74,8 +74,8 @@ func _on_field_effort_factor_value_changed(value):
 	field_effort_factor = value
 
 
-func _on_field_penalty_factor_value_changed(value):
-	field_penalty_factor = value
+#func _on_field_penalty_factor_value_changed(value):
+#	field_penalty_factor = value
 
 
 func _on_gen_targets_value_changed(value):

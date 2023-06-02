@@ -41,7 +41,7 @@ var nodes:Array[VFNNode]
 	set( value ):
 		size = value
 		update_debug_mesh()
-		emit_signal("map_changed")
+		init()
 
 ## draw a debug mesh
 @export var draw_debug:bool :
@@ -143,6 +143,8 @@ func init( ):
 					connection.effort = c_node.world_position.distance_to(n_node.world_position)
 					connection.steepness = (c_node.world_position.y - n_node.world_position.y) / c_node.world_position_2d.distance_to(n_node.world_position_2d)
 					c_node.connections[ci] = connection
+	
+	emit_signal("map_changed")
 
 
 ##get node object at position pos
@@ -162,7 +164,7 @@ func create_field( ) -> VFNField:
 
 
 ## set the tiles heights based on an image
-func create_from_image( img:Image ):
+func create_from_image( img:Image, g_channel:VFNModField = null, b_channel:VFNModField = null, a_channel:VFNModField = null ):
 	if not img:
 		return
 	size = img.get_size()
@@ -178,10 +180,12 @@ func create_from_image( img:Image ):
 		for y in size.y:
 			c = img.get_pixel(x,y)
 			set_height( Vector2i(x, y), c.r )
-#			set_penalty( Vector2i(x, y), c.g )
-			if c.a < 0.5:
-				disable_node( Vector2i(x, y) )
-			
+			if g_channel:
+				g_channel.set_value( Vector2i(x,y), c.g)
+			if b_channel:
+				b_channel.set_value( Vector2i(x,y), c.g)
+			if a_channel:
+				a_channel.set_value( Vector2i(x,y), c.g)
 	
 	for c_node in nodes:
 		for connection in c_node.connections:
@@ -320,9 +324,10 @@ func ______MOD_FIELDS():
 
 var mod_fields:Array[VFNModField]
 
-## adds a modification field to this map
-func add_mod_field() -> VFNModField:
+## adds a modification field to this map with a name
+func add_mod_field( name:String ) -> VFNModField:
 	var mf = VFNModField.new(self)
+	mf.name = name
 	mod_fields.append(mf)
 	return mf
 

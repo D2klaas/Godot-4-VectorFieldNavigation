@@ -93,7 +93,6 @@ func _on_button_pressed():
 	field.calculate_threaded( self._on_calculated.bind(field) )
 
 
-
 func _on_calculated( field ):
 	$VectorMap.update_debug_mesh( field )
 	var tex = ImageTexture.create_from_image(field.get_target_heatmap())

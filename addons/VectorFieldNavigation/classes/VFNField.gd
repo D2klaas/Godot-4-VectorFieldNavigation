@@ -200,10 +200,10 @@ func _on_thread_finished():
 		if r:
 			d("thread finished successful")
 			field_vector = _field_vector
+
 			#release some memory
-			_field_vector.clear()
+			_field_vector = PackedVector3Array()
 			field_open_mask.clear()
-			field_target.clear()
 			emit_signal("calculated")
 		else:
 			d("thread failed")
@@ -367,7 +367,7 @@ func calculate():
 				cached += 1
 				continue
 			
-			n_node = c.node_b
+			n_node = c.other_node
 			n_index = n_node.vf_index
 			
 			if field_ef[c_index] > field_ef[n_index]:
@@ -504,8 +504,8 @@ func get_vector_smooth_world( global_position:Vector3, clamp:bool=true  ) -> Vec
 		for c in node.connections:
 			if not c:
 				continue
-			d = global_position.distance_to(c.node_b.world_position)
-			v += field_vector[c.node_b.vf_index] * ( d / 3 )
+			d = global_position.distance_to(c.other_node.world_position)
+			v += field_vector[c.other_node.vf_index] * ( d / 3 )
 		return v.normalized()
 
 

@@ -7,6 +7,7 @@ var debug:bool = true
 var map:VFNMap
 ##set targets
 var targets:Array
+var index_of_targets:Dictionary
 ##heighest effort used on the field
 var heighest_ef:float
 ##stop calculation if more nodes processed than n * node_count
@@ -158,6 +159,17 @@ func remove_targets( destinations:Array[Vector2i] ):
 
 
 # everything about calculating
+func ______MODFIELD():
+	pass
+
+
+var modfield_weights:Dictionary
+
+
+func set_modfield( name:String, weight:float ):
+	modfield_weights[name] = weight
+
+
 func ______CALCULATION():
 	pass
 
@@ -188,6 +200,10 @@ func _on_thread_finished():
 		if r:
 			d("thread finished successful")
 			field_vector = _field_vector
+			#release some memory
+			_field_vector.clear()
+			field_open_mask.clear()
+			field_target.clear()
 			emit_signal("calculated")
 		else:
 			d("thread failed")
@@ -245,6 +261,7 @@ func calculate():
 		field_target[ t.node.vf_index ] = t.node.vf_index
 		field_open_mask[ t.node.vf_index ] = 1
 		field_final_destination[ t.node.vf_index ] = t.node.vf_index
+		index_of_targets[t.pos.x * map.size.x + t.pos.y] = t
 	
 	#neighbour tile index
 	var nx:int
@@ -273,12 +290,30 @@ func calculate():
 	var con_index:int = 0
 	
 	var static_mod_fields:Array
+	var static_mod_fields_weights:Array[float]
 	var dynamic_mod_fields:Array
+	var dynamic_mod_fields_weights:Array[float]
 	for mf in map.mod_fields:
 		if mf.dynamic:
-			dynamic_mod_fields.append(mf)
+			if modfield_weights.has(mf.name):
+				if modfield_weights[mf.name] > 0:
+					dynamic_mod_fields.append(mf)
+					dynamic_mod_fields_weights.append(modfield_weights[mf.name])
+				else:
+					pass
+			else:
+				dynamic_mod_fields.append(mf)
+				dynamic_mod_fields_weights.append(1)
 		else:
-			static_mod_fields.append(mf)
+			if modfield_weights.has(mf.name):
+				if modfield_weights[mf.name] > 0:
+					static_mod_fields.append(mf)
+					static_mod_fields_weights.append(modfield_weights[mf.name])
+				else:
+					pass
+			else:
+				static_mod_fields.append(mf)
+				static_mod_fields_weights.append(1)
 
 	
 	while openlist.size() > 0:
@@ -308,10 +343,12 @@ func calculate():
 		
 		# dynamic mod field penaltys for this c_node
 		c_node_ef = 0
-		for mf in dynamic_mod_fields:
+		var mf:VFNModField
+		for i in dynamic_mod_fields.size():
+			mf = dynamic_mod_fields[i]
 			if mf.boolean and round(mf.field[c_index]) != 1:
 				continue
-			c_node_ef += mf.field[c_index] * field_effort_factor
+			c_node_ef += mf.field[c_index] * field_effort_factor * dynamic_mod_fields_weights[i]
 		
 		
 		con_index = -1
@@ -388,11 +425,12 @@ func calculate():
 				_ef += c.effort
 				
 				#add static mod fields
-				for mf in static_mod_fields:
+				for i in static_mod_fields.size():
+					mf = static_mod_fields[i]
 					if mf.boolean and round(mf.field[c_index]) != 1:
 						connection_cache[cache_index + con_index] = -1
 						continue
-					_ef += mf.field[c_index] * field_effort_factor
+					_ef += mf.field[c_index] * field_effort_factor * static_mod_fields_weights[i]
 				
 				connection_cache[cache_index + con_index] = _ef
 			else:
@@ -422,7 +460,20 @@ func calculate():
 	return true
 
 
-## get movement vector for world position
+## get VFNTarget for world position
+func get_target_world( global_position:Vector3, clamp:bool=true ) -> VFNTarget:
+	var p:Vector3 = map.to_local( global_position )
+	p = p.round() / map.field_scale
+	var n:Vector2i = Vector2i(p.x,p.z)
+	if clamp:
+		n = Vector2i(p.x,p.z).clamp(Vector2i.ZERO,map.size)
+	var index = n.x*map.size.x+n.y
+	if index < 0 or index >= field_vector.size():
+		return null
+	else:
+		return index_of_targets[field_final_destination[index]]
+
+
 func get_vector_world( global_position:Vector3, clamp:bool=true ) -> Vector3:
 	var p:Vector3 = map.to_local( global_position )
 	p = p.round() / map.field_scale

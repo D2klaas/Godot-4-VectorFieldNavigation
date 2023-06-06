@@ -17,10 +17,17 @@ var boolean:bool = false
 var field:PackedFloat32Array
 ## the associated map
 var map:VFNMap
+## name of the modfield
+var name:String
 
 
 func _init( _map:VFNMap ):
 	map = _map
+	map.connect("map_changed",self._reinit)
+	_reinit()
+
+
+func _reinit():
 	field.resize( map.nodes.size() )
 
 

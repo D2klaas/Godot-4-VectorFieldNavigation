@@ -25,7 +25,7 @@ func _ready():
 	map.add_portal(Vector2i(80,44),Vector2i(25,60))
 	
 	##create a penalty field for edge penalties
-	var penalty_field:VFNModField = map.add_mod_field()
+	var penalty_field:VFNModField = map.add_mod_field("margin")
 	penalty_field.upmost = true
 	
 	# add some penalty margin arround cliffs in the created modField

@@ -22,13 +22,16 @@ therefor the entity dont have to walk predefined waypoints.
 
 This VFN addon implements a planar(2D/3D) solution wich can be used in 3D space. Currently it does not 
 support underpaths, bridges or alike. This may be change in future realases, but a real 3D node based 
-solution is more complex and will not be as performant as a "2D" solution.
+solution is more complex and will not be as performant as a "2D" solution. The performance is quit good,
+a 128 x 128 grid with medium complexity will compute in around 130ms on a AMD Ryzen 5. Even on low end
+devices its about 350ms. This means you can constantly track a target and receive at least 2 updates per second.
+One of the cool features of this algorythm is that the number of targets does not hit the performance.
 
 ## Features:
 * multipy solutions with different modifiers for a single map
 * threaded calculation for stutter free usage
 * map preperation tools (e.g. use heightmaps)
-* fast (as gdscript can)
+* reasonable fast (as gdscript can)
 * connection-cache (+10% performance)
 * flexible modifier layers for static or dynamic movement penalties
 
@@ -108,8 +111,10 @@ The base data of the navigation map.
   create field based on this map for calculation solutions
 
 
-* `create_from_image( img:Image )`\
-  initializes this map based on an heightmap image
+* `create_from_image( img:Image, g_channel:VFNModField=null, b_channel:VFNModField=null, a_channel:VFNModField=null )`\
+  initializes this map based on an heightmap image\
+  r channel is node height
+  g, b and a channel can be used for modfields
 
 
 * `add_penalty_height_margin( field:VFNModField, margin:int, strength:float )`\
@@ -144,8 +149,8 @@ The base data of the navigation map.
   when a field is given, effort will be shown with color
 
 
-* `add_mod_field() -> VFNModField`\
-  adds a modfield to the map\
+* `add_mod_field( name:String ) -> VFNModField`\
+  adds a named modfield to the map\
   see modfields for further explanations
 
 
@@ -196,10 +201,20 @@ Field for calculating solutions based on a VFNMap.
 * `remove_targets( destinations:Array[Vector2i]`\
   remove targets at positions
 
+* `set_modfield( name:String, weight:float )`\
+  weights the modfield by weight\
+  weight 0 disables the influenz of the modfield\
+  weight multiplies the field effort like ...\
+  effort += modffield_node_value * field_effort_factor * modfield_weight
+
 
 * `calculate_threaded( callback = null, kill_existing_thread:bool=true )`\
   starts threaded calculation\
   calls callback after finish when successful
+
+
+* `get_target_world( global_position:Vector3, clamp:bool=true ) -> VFNTarget`\
+  gets target for world position global_position, clamp true will clamp position to the map
 
 
 * `get_vector_world( global_position:Vector3, clamp:bool=true ) -> Vector3`\

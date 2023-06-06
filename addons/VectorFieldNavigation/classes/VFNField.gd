@@ -19,8 +19,8 @@ var _kill_thread:bool
 var field_mutex:Mutex
 
 var field_ef:PackedFloat32Array
-var field_final_destination:PackedInt32Array
 var field_target:PackedInt32Array
+var field_aim:PackedInt32Array
 var _field_vector:PackedVector3Array #working vectorfield
 var field_vector:PackedVector3Array
 var field_open_mask:PackedInt32Array
@@ -165,9 +165,13 @@ func ______MODFIELD():
 
 var modfield_weights:Dictionary
 
-
+##weight for a modfield of the map
 func set_modfield( name:String, weight:float ):
-	modfield_weights[name] = weight
+	for mf in map.mod_fields:
+		if mf.name == name:
+			modfield_weights[name] = weight
+			return true
+	return false
 
 
 func ______CALCULATION():
@@ -229,11 +233,11 @@ func init_fields():
 	field_ef.fill(VERY_HIGH_NUMBER)
 	
 	#fill field aims list with null
+	field_aim.resize( map.size.x * map.size.y )
+	field_aim.fill(-1)
+	
 	field_target.resize( map.size.x * map.size.y )
 	field_target.fill(-1)
-	
-	field_final_destination.resize( map.size.x * map.size.y )
-	field_final_destination.fill(-1)
 	
 	_field_vector.clear()
 	_field_vector.resize( map.size.x * map.size.y )
@@ -256,11 +260,11 @@ func calculate():
 	var openlist:Array[int]
 	for t in targets:
 		#insert targets into the openlist
-		openlist.append( t.node.vf_index )
-		field_ef[ t.node.vf_index ] = 0.0
-		field_target[ t.node.vf_index ] = t.node.vf_index
-		field_open_mask[ t.node.vf_index ] = 1
-		field_final_destination[ t.node.vf_index ] = t.node.vf_index
+		openlist.append( t.node.field_index )
+		field_ef[ t.node.field_index ] = 0.0
+		field_aim[ t.node.field_index ] = t.node.field_index
+		field_open_mask[ t.node.field_index ] = 1
+		field_target[ t.node.field_index ] = t.node.field_index
 		index_of_targets[t.pos.x * map.size.x + t.pos.y] = t
 	
 	#neighbour tile index
@@ -314,7 +318,6 @@ func calculate():
 			else:
 				static_mod_fields.append(mf)
 				static_mod_fields_weights.append(1)
-
 	
 	while openlist.size() > 0:
 		steps += 1
@@ -368,7 +371,7 @@ func calculate():
 				continue
 			
 			n_node = c.other_node
-			n_index = n_node.vf_index
+			n_index = n_node.field_index
 			
 			if field_ef[c_index] > field_ef[n_index]:
 				skips_1 += 1
@@ -441,9 +444,9 @@ func calculate():
 			#next node to current node effort is smaller
 			if ef < field_ef[n_index] and ef < effort_cutoff:
 				field_ef[n_index] = ef
-				field_target[n_index] = c_index
+				field_aim[n_index] = c_index
 				_field_vector[n_index] = n_node.world_position.direction_to(c_node.world_position)
-				field_final_destination[n_index] = field_final_destination[c_index]
+				field_target[n_index] = field_target[c_index]
 				if field_open_mask[n_index] != 1:
 					openlist.append( n_index )
 					field_open_mask[n_index] = 1
@@ -460,6 +463,38 @@ func calculate():
 	return true
 
 
+func ______RETRIEVING():
+	pass
+
+
+## get the index number of the node where this node is pointing to from world position
+func get_aim_world( global_position:Vector3, clamp:bool=true ) -> int:
+	var p:Vector3 = map.to_local( global_position )
+	p = p.round() / map.field_scale
+	var n:Vector2i = Vector2i(p.x,p.z)
+	if clamp:
+		n = Vector2i(p.x,p.z).clamp(Vector2i.ZERO,map.size)
+	var index = n.x*map.size.x+n.y
+	if index < 0 or index >= field_vector.size():
+		return -1
+	else:
+		return field_aim[index]
+
+
+## get VFNNode for world position
+func get_node_world( global_position:Vector3, clamp:bool=true ) -> VFNNode:
+	var p:Vector3 = map.to_local( global_position )
+	p = p.round() / map.field_scale
+	var n:Vector2i = Vector2i(p.x,p.z)
+	if clamp:
+		n = Vector2i(p.x,p.z).clamp(Vector2i.ZERO,map.size)
+	var index = n.x*map.size.x+n.y
+	if index < 0 or index >= field_vector.size():
+		return null
+	else:
+		return map.nodes[index]
+
+
 ## get VFNTarget for world position
 func get_target_world( global_position:Vector3, clamp:bool=true ) -> VFNTarget:
 	var p:Vector3 = map.to_local( global_position )
@@ -471,7 +506,7 @@ func get_target_world( global_position:Vector3, clamp:bool=true ) -> VFNTarget:
 	if index < 0 or index >= field_vector.size():
 		return null
 	else:
-		return index_of_targets[field_final_destination[index]]
+		return index_of_targets[field_target[index]]
 
 
 func get_vector_world( global_position:Vector3, clamp:bool=true ) -> Vector3:
@@ -505,8 +540,12 @@ func get_vector_smooth_world( global_position:Vector3, clamp:bool=true  ) -> Vec
 			if not c:
 				continue
 			d = global_position.distance_to(c.other_node.world_position)
-			v += field_vector[c.other_node.vf_index] * ( d / 3 )
+			v += field_vector[c.other_node.field_index] * ( d / 3 )
 		return v.normalized()
+
+
+func ______DEBUG():
+	pass
 
 
 ## generates a heatmap based on the tiles effort to the closest target
@@ -515,7 +554,7 @@ func get_effort_heatmap() -> Image:
 	var c:Color
 	var ef:float
 	for n in map.nodes:
-		ef = field_ef[n.vf_index]
+		ef = field_ef[n.field_index]
 		c = Color.from_hsv( ef / heighest_ef, 1, 1 )
 		if ef == 0:
 			c = Color.BLACK
@@ -529,9 +568,9 @@ func get_target_heatmap() -> Image:
 	var c:Color
 	var ef:float
 	for n in map.nodes:
-		ef = field_ef[n.vf_index]
-		if field_final_destination[n.vf_index]:
-			c = map.nodes[field_final_destination[n.vf_index]].color
+		ef = field_ef[n.field_index]
+		if field_target[n.field_index]:
+			c = map.nodes[field_target[n.field_index]].color
 			c.v = 1.0 - ef / heighest_ef
 		else:
 			c = Color.GRAY

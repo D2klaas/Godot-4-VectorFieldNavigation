@@ -123,7 +123,7 @@ func init( ):
 			connection_count += 8
 			node.map = self
 			node.pos = Vector2i(x,y)
-			nodes[node.vf_index] = node
+			nodes[node.field_index] = node
 	
 	var c_node:VFNNode
 	var n_node:VFNNode
@@ -139,7 +139,7 @@ func init( ):
 				if n_index >= 0 and n_index < nodes.size():
 					n_node = nodes[n_index]
 					connection = VFNConnection.new()
-					connection.node_b = n_node
+					connection.other_node = n_node
 					connection.effort = c_node.world_position.distance_to(n_node.world_position)
 					connection.steepness = (c_node.world_position.y - n_node.world_position.y) / c_node.world_position_2d.distance_to(n_node.world_position_2d)
 					c_node.connections[ci] = connection
@@ -190,9 +190,9 @@ func create_from_image( img:Image, g_channel:VFNModField = null, b_channel:VFNMo
 	for c_node in nodes:
 		for connection in c_node.connections:
 			if connection:
-				connection.effort = c_node.world_position.distance_to(connection.node_b.world_position)
-#				connection.steepness = (c_node.world_position.y - connection.node_b.world_position.y) / c_node.world_position_2d.distance_to(connection.node_b.world_position_2d)
-				connection.steepness = (connection.node_b.height - c_node.height) / c_node.rel_position.distance_to(connection.node_b.rel_position)
+				connection.effort = c_node.world_position.distance_to(connection.other_node.world_position)
+#				connection.steepness = (c_node.world_position.y - connection.other_node.world_position.y) / c_node.world_position_2d.distance_to(connection.other_node.world_position_2d)
+				connection.steepness = (connection.other_node.height - c_node.height) / c_node.rel_position.distance_to(connection.other_node.rel_position)
 
 
 func ______MODIFY():
@@ -247,7 +247,7 @@ func add_portal( a:Vector2i, b:Vector2i ) -> VFNConnection:
 	if c_node and n_node:
 		var vfc:VFNConnection = VFNConnection.new()
 		vfc.effort = 0.1
-		vfc.node_b = n_node
+		vfc.other_node = n_node
 		c_node.connections.append( vfc )
 		connection_count += 1
 		
@@ -269,6 +269,18 @@ func enable_node( pos:Vector2i ):
 	var n:VFNNode = get_node_at( pos )
 	if n:
 		n.disabled = false
+
+
+func ______RETRIEVING():
+	pass
+
+
+# get a node by its index number
+func get_node_from_index( index:int ) -> VFNNode:
+	if index < 0 or index >= nodes.size():
+		return null
+	else:
+		return nodes[index]
 
 
 func ______DEBUG():
@@ -306,9 +318,9 @@ func update_debug_mesh( field:VFNField=null ):
 	var index:int
 	for n in nodes:
 		if field:
-			if field.field_final_destination[n.vf_index]:
-				c = nodes[field.field_final_destination[n.vf_index]].color
-				c.v = 1.0 - field.field_ef[n.vf_index] / field.heighest_ef
+			if field.field_final_destination[n.field_index]:
+				c = nodes[field.field_final_destination[n.field_index]].color
+				c.v = 1.0 - field.field_ef[n.field_index] / field.heighest_ef
 			else:
 				c = Color.GRAY
 		else:

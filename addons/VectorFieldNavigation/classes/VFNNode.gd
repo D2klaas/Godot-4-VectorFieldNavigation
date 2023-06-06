@@ -18,7 +18,7 @@ var world_position_2d:Vector2
 ## the relative position on the grid
 var rel_position:Vector3
 ## this's nodes index number in field arrays
-var vf_index:int
+var field_index:int
 ## a random color for debug purposes
 var color:Color
 ## node is disabled, gets excluded from calculation
@@ -27,7 +27,7 @@ var disabled:bool = false
 var pos:Vector2i :
 	set( value ):
 		pos = value
-		vf_index = pos.x * map.size.x + pos.y
+		field_index = pos.x * map.size.x + pos.y
 
 ## height of the node
 var height:float :

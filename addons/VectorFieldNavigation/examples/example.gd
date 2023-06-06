@@ -24,7 +24,8 @@ func _ready():
 	map.add_portal(Vector2i(25,60),Vector2i(80,44))
 	map.add_portal(Vector2i(80,44),Vector2i(25,60))
 	
-	##create a penalty field for edge penalties
+	# create a penalty field for edge penalties
+	# keeping entities from gliding along the walls
 	var penalty_field:VFNModField = map.add_mod_field("margin")
 	penalty_field.upmost = true
 	
@@ -62,6 +63,10 @@ func _on_button_pressed():
 	if not field:
 		field = map.create_field( )
 	
+	# if you want to weight the influence of a modfield you can do it like this
+	field.set_modfield("margin",1) # factor 1 is default
+	
+	# set gui values to field modifiers
 	field.effort_cutoff = $GUI.effort_cutoff
 	field.climb_factor = $GUI.climb_factor
 	field.climb_cutoff = $GUI.climb_cutoff
@@ -69,6 +74,7 @@ func _on_button_pressed():
 	field.drop_cutoff = $GUI.drop_cutoff
 	field.field_effort_factor = $GUI.field_effort_factor
 	
+	# clear all assigned target nodes
 	field.clear_targets()
 	
 	var pos:Vector2i

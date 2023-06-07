@@ -1,11 +1,10 @@
-[gd_scene load_steps=12 format=3 uid="uid://bq1okk6qaxpfr"]
+[gd_scene load_steps=11 format=3 uid="uid://bq1okk6qaxpfr"]
 
 [ext_resource type="Script" path="res://addons/VectorFieldNavigation/examples/example.gd" id="1_l5mr5"]
 [ext_resource type="Texture2D" uid="uid://3mxy8pc7xvjg" path="res://addons/VectorFieldNavigation/examples/heightmap.png" id="2_d7bo2"]
 [ext_resource type="PackedScene" uid="uid://bcvvvevh62vfq" path="res://addons/VectorFieldNavigation/examples/unit.tscn" id="2_eruqq"]
 [ext_resource type="Script" path="res://addons/VectorFieldNavigation/examples/GUI.gd" id="2_gdncv"]
 [ext_resource type="Script" path="res://addons/VectorFieldNavigation/classes/VFNMap.gd" id="4_n068j"]
-[ext_resource type="Environment" uid="uid://m4fyiam5c8q0" path="res://default_env.tres" id="5_rmxyj"]
 [ext_resource type="Script" path="res://addons/VectorFieldNavigation/examples/Portal.gd" id="7_00jh6"]
 
 [sub_resource type="HeightMapShape3D" id="HeightMapShape3D_v1r8j"]
@@ -282,7 +281,6 @@ material_override = SubResource("StandardMaterial3D_k8nl8")
 skeleton = NodePath("../..")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = ExtResource("5_rmxyj")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.71446, 0.480756, 0.50835, 0, -0.726551, 0.687113, 0.699676, -0.490915, -0.519092, 0, 15.0457, 0)

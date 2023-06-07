@@ -8,6 +8,8 @@ class_name VFNMap
 ## It holds all nodes of the grid and features map modification tools
  
 
+##print debug message to the console
+var debug:bool = true
 ## all nodes of the grid
 var nodes:Array[VFNNode]
 
@@ -39,6 +41,8 @@ var nodes:Array[VFNNode]
 ## the maps width and depth
 @export var size:Vector2i :
 	set( value ):
+		if size == value:
+			return
 		size = value
 		update_debug_mesh()
 		init()
@@ -51,6 +55,7 @@ var nodes:Array[VFNNode]
 
 var _debug_mesh:MeshInstance3D
 var _is_init:bool
+var _is_ready:bool
 
 ## use this image to fill the maps data
 @export var heightmap:Texture2D :
@@ -101,7 +106,9 @@ signal nodes_changed
 
 func _ready():
 	await get_tree().process_frame #await first frame, so that the heightmap can be used
+	_is_ready = true
 	if heightmap and use_heightmap:
+		d("processing export heightmap")
 		var img =  heightmap.get_image()
 		create_from_image( img )
 	else:
@@ -112,6 +119,10 @@ func _ready():
 
 ## initializes the data structure for the map
 func init( ):
+	if not _is_ready:
+		return
+	
+	d("init map with "+str(size))
 	var protonode = VFNNode.new()
 	var node
 	nodes.clear()
@@ -144,6 +155,8 @@ func init( ):
 					connection.steepness = (c_node.world_position.y - n_node.world_position.y) / c_node.world_position_2d.distance_to(n_node.world_position_2d)
 					c_node.connections[ci] = connection
 	
+	d("created "+str(nodes.size())+" nodes with "+str(connection_count)+" connections")
+	
 	emit_signal("map_changed")
 
 
@@ -167,10 +180,11 @@ func create_field( ) -> VFNField:
 func create_from_image( img:Image, g_channel:VFNModField = null, b_channel:VFNModField = null, a_channel:VFNModField = null ):
 	if not img:
 		return
-	size = img.get_size()
-	if size.x == 0 or size.y == 0:
+	var _size = img.get_size()
+	if _size.x == 0 or _size.y == 0:
 		return
-	init()
+	
+	size = _size
 	
 	var nx:int
 	var ny:int
@@ -283,6 +297,37 @@ func get_node_from_index( index:int ) -> VFNNode:
 		return nodes[index]
 
 
+func ______MOD_FIELDS():
+	pass
+
+
+var mod_fields:Array[VFNModField]
+
+## adds a modification field to this map with a name
+func add_mod_field( name:String ) -> VFNModField:
+	var mf = VFNModField.new(self)
+	mf.name = name
+	mod_fields.append(mf)
+	return mf
+
+
+func ______SERIALIZATION():
+	pass
+
+
+func serialize():
+	var data:Dictionary = {
+		"field_scale": null,
+		"height_scale": null,
+		"size": null,
+		"nodes": null
+	}
+	return var_to_bytes_with_objects(self)
+
+
+func unserialize( data:PackedByteArray ):
+	print(bytes_to_var_with_objects(data))
+
 func ______DEBUG():
 	pass
 
@@ -330,16 +375,8 @@ func update_debug_mesh( field:VFNField=null ):
 	_debug_mesh.mesh.surface_end()
 
 
-func ______MOD_FIELDS():
-	pass
+func d( value ):
+	if debug:
+		print("VFN-Map: "+str(value) )
 
-
-var mod_fields:Array[VFNModField]
-
-## adds a modification field to this map with a name
-func add_mod_field( name:String ) -> VFNModField:
-	var mf = VFNModField.new(self)
-	mf.name = name
-	mod_fields.append(mf)
-	return mf
 

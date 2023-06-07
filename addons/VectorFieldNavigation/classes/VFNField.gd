@@ -208,9 +208,10 @@ func _on_thread_finished():
 			#release some memory
 			_field_vector = PackedVector3Array()
 			field_open_mask.clear()
-			emit_signal("calculated")
+			emit_signal("calculated", true)
 		else:
 			d("thread failed")
+			emit_signal("calculated", false)
 		thread = null
 
 
@@ -336,6 +337,10 @@ func calculate():
 		c_index = openlist.pop_front()
 		field_open_mask[c_index] = 0
 		c_node = map.nodes[c_index]
+		
+		#if current node is disabled, skip calculation
+		if c_node.disabled:
+			continue
 		
 		# init cache if not present
 		cache_index = connection_cache_index[c_index]

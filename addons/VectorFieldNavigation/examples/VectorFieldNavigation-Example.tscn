@@ -1,10 +1,11 @@
-[gd_scene load_steps=11 format=3 uid="uid://bq1okk6qaxpfr"]
+[gd_scene load_steps=12 format=3 uid="uid://bq1okk6qaxpfr"]
 
 [ext_resource type="Script" path="res://addons/VectorFieldNavigation/examples/example.gd" id="1_l5mr5"]
 [ext_resource type="Texture2D" uid="uid://3mxy8pc7xvjg" path="res://addons/VectorFieldNavigation/examples/heightmap.png" id="2_d7bo2"]
 [ext_resource type="PackedScene" uid="uid://bcvvvevh62vfq" path="res://addons/VectorFieldNavigation/examples/unit.tscn" id="2_eruqq"]
 [ext_resource type="Script" path="res://addons/VectorFieldNavigation/examples/GUI.gd" id="2_gdncv"]
 [ext_resource type="Script" path="res://addons/VectorFieldNavigation/classes/VFNMap.gd" id="4_n068j"]
+[ext_resource type="Environment" path="res://default_env.tres" id="6_5pmrx"]
 [ext_resource type="Script" path="res://addons/VectorFieldNavigation/examples/Portal.gd" id="7_00jh6"]
 
 [sub_resource type="HeightMapShape3D" id="HeightMapShape3D_v1r8j"]
@@ -187,7 +188,7 @@ text = "0"
 
 [node name="GoButton" type="Button" parent="GUI/MarginContainer2/VBoxContainer"]
 layout_mode = 2
-text = "GO"
+text = "Generate Random Targets"
 
 [node name="MarginContainer" type="MarginContainer" parent="GUI"]
 layout_mode = 1
@@ -256,9 +257,7 @@ layout_mode = 2
 [node name="VectorMap" type="Node3D" parent="."]
 script = ExtResource("4_n068j")
 height_scale = 5.0
-size = Vector2i(128, 128)
 heightmap = ExtResource("2_d7bo2")
-use_heightmap = true
 
 [node name="cam_base" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 64, 0, 64)
@@ -281,6 +280,7 @@ material_override = SubResource("StandardMaterial3D_k8nl8")
 skeleton = NodePath("../..")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = ExtResource("6_5pmrx")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.71446, 0.480756, 0.50835, 0, -0.726551, 0.687113, 0.699676, -0.490915, -0.519092, 0, 15.0457, 0)

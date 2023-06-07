@@ -39,6 +39,8 @@ func _ready():
 	$scenery/terrain/shape.shape.map_depth = map.size.y
 	$scenery/terrain/shape.position = map.position * -1
 	
+	var buffer = map.serialize()
+	
 	# create some units
 	var u
 	var _unit = load("res://addons/VectorFieldNavigation/examples/unit.tscn")
@@ -61,7 +63,12 @@ func _ready():
 func _on_button_pressed():
 	var map = $VectorMap
 	if not field:
+		#create a field
 		field = map.create_field( )
+		#connect units with the field
+		var units = get_tree().get_nodes_in_group("unit")
+		for unit in units:
+			unit.field = field
 	
 	# if you want to weight the influence of a modfield you can do it like this
 	field.set_modfield("margin",1) # factor 1 is default
@@ -93,7 +100,9 @@ func _on_button_pressed():
 	field.calculate_threaded( self._on_calculated.bind(field) )
 
 
-func _on_calculated( field ):
+func _on_calculated( succesful, field ):
+	if not succesful:
+		return
 	$VectorMap.update_debug_mesh( field )
 	var tex = ImageTexture.create_from_image(field.get_target_heatmap())
 	%TargetMap.texture = tex
@@ -102,10 +111,6 @@ func _on_calculated( field ):
 	tex = ImageTexture.create_from_image(field.get_effort_heatmap())
 	%EffortMap.texture = tex
 	$scenery/terrain/mesh.material_override.albedo_texture = %TargetMap.texture
-	
-	var units = get_tree().get_nodes_in_group("unit")
-	for unit in units:
-		unit.field = field
 
 
 func _process(delta):

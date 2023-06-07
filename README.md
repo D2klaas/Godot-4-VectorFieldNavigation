@@ -113,20 +113,22 @@ The base data of the navigation map.
 
 * `create_from_image( img:Image, g_channel:VFNModField=null, b_channel:VFNModField=null, a_channel:VFNModField=null )`\
   initializes this map based on an heightmap image\
-  r channel is node height
+  r channel is allways the node height\
   g, b and a channel can be used for modfields
 
 
 * `add_penalty_height_margin( field:VFNModField, margin:int, strength:float )`\
-  adds penalty to a modfield around slopes and cliffs
+  adds penalty to a modfield around slopes and cliffs\
+  useful for keeping entities from gliding along walls to reach there targets
 
 
 * `set_height( pos:Vector2i, height:float )`\
-  set nodes height at pos to height (0->1)
+  set nodes height at pos to height\
+  height should be between 0 and 1, scale the height with the height_scale property
 
 
 * `get_height( pos:Vector2i ) -> float`\
-  get nodes height at pos
+  get nodes height at grid position pos
 
 
 * `add_portal( a:Vector2i, b:Vector2i ) -> VFNConnection`\
@@ -162,6 +164,7 @@ The base data of the navigation map.
 Field for calculating solutions based on a VFNMap.
 
 **Properties**
+
 * `effort_cutoff:float`\
   stop calculation further when final effort is higher as this number
 
@@ -184,8 +187,8 @@ Field for calculating solutions based on a VFNMap.
 
 **Signals**
 
-* `calculated`\
-  the calculation has finished succesfully
+* `calculated( succesful:bool )`\
+  the calculation has finished
   
   
 **Methods**

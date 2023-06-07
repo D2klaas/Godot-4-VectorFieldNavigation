@@ -12,3 +12,6 @@ export_presets.cfg
 #my ignores
 addons/godot-git-plugin
 project.godot
+default_env.tres
+icon.png
+icon.png.import

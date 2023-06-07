@@ -1,6 +1,6 @@
 # Godot-4-VectorFieldNavigation
 
-**CURRENTLY IN WIP STATE, comments and suggestions appreciated !**
+**This project is currently in an early stage. Please report any issues you encounter! Comments and suggestions also appreciated !**
 
 ![alt text](https://github.com/D2klaas/Godot-4-VectorFieldNavigation/blob/main/addons/VectorFieldNavigation/examples/screenshot.jpg?raw=true)
 

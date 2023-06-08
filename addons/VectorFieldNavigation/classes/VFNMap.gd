@@ -2,6 +2,7 @@
 extends Node3D
 class_name VFNMap
 
+
 ## Vector-Field-Navigation-Map
 ##
 ## This is the base class for a grid map for VFN-Navigation.

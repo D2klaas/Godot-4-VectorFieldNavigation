@@ -3,10 +3,8 @@ extends EditorPlugin
 
 
 func _enter_tree():
-	# Initialization of the plugin goes here.
-	pass
+	add_custom_type("VFNMap","Node3D",preload("res://addons/VectorFieldNavigation/classes/VFNMap.gd"),preload("res://addons/VectorFieldNavigation/vfn_icon_mono.png"))
 
 
 func _exit_tree():
-	# Clean-up of the plugin goes here.
-	pass
+	remove_custom_type("VFNMap")

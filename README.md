@@ -160,6 +160,17 @@ The base data of the navigation map.
   get VFNNode object from index number or -1 if not exist/valid
 
 
+* `serialize() -> PackedByteArray`\
+  serializes all data from this map to a packedByteArray\
+  useful to store pre-processed maps into files
+
+
+* `unserialize( data:PackedByteArray )`\
+  rebuild map data from this serialized PackedByteArray
+  useful to restore pre-processed maps from files
+
+
+
 ### VFNField
 Field for calculating solutions based on a VFNMap.
 
@@ -218,6 +229,11 @@ Field for calculating solutions based on a VFNMap.
 * `calculate_threaded( callback = null, kill_existing_thread:bool=true )`\
   starts threaded calculation\
   calls callback after finish when successful
+
+
+* `stop_calculation()`\
+  kills the running calculation thread.\
+  Signal calculated will still be called with flag unsuccessful 
 
 
 * `get_aim_world( global_position:Vector3, clamp:bool=true ) -> int`\

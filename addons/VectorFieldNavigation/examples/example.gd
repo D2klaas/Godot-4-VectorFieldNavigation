@@ -40,6 +40,7 @@ func _ready():
 	$scenery/terrain/shape.position = map.position * -1
 	
 	var buffer = map.serialize()
+	map.unserialize(buffer)
 	
 	# create some units
 	var u

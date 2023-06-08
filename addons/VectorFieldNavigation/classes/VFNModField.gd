@@ -59,3 +59,21 @@ func fade( f:float ):
 ## not yet implemented
 func blur_fade( f:float ):
 	pass
+
+
+##serialize this object into buffer stream
+func serialize( data:StreamPeer ):
+	data.put_string(name)
+	data.put_u8(int(dynamic))
+	data.put_u8(int(upmost))
+	data.put_u8(int(boolean))
+	data.put_var(field)
+
+
+##unserialize this object from buffer stream
+func unserialize( data:StreamPeer ):
+	name = data.get_string()
+	dynamic = data.get_u8()
+	upmost = data.get_u8()
+	boolean = data.get_u8()
+	field = data.get_var()

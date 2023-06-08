@@ -125,6 +125,7 @@ func init( ):
 	d("init map with "+str(size))
 	var protonode = VFNNode.new()
 	var node
+	mod_fields.clear()
 	nodes.clear()
 	nodes.resize(size.x*size.y)
 	connection_count = 0
@@ -315,18 +316,56 @@ func ______SERIALIZATION():
 	pass
 
 
-func serialize():
-	var data:Dictionary = {
-		"field_scale": null,
-		"height_scale": null,
-		"size": null,
-		"nodes": null
-	}
-	return var_to_bytes_with_objects(self)
+##serialize this map to a PackedByteArray
+func serialize() -> PackedByteArray:
+	var data:StreamPeerBuffer = StreamPeerBuffer.new()
+	data.put_string("v0.1") #Version
+	data.put_float(field_scale)
+	data.put_float(height_scale)
+	data.put_u16(size.x)
+	data.put_u16(size.y)
+	
+	for n in nodes:
+		n.serialize( data )
+	
+	data.put_u8(mod_fields.size())
+	for mf in mod_fields:
+		mf.serialize( data )
+	
+	d("serialized data ("+str(data.data_array.size())+" bytes)")
+	return data.data_array
 
 
-func unserialize( data:PackedByteArray ):
-	print(bytes_to_var_with_objects(data))
+##unserialize this map from a PackedByteArray
+func unserialize( _data:PackedByteArray ):
+	var data:StreamPeerBuffer = StreamPeerBuffer.new()
+	data.data_array = _data
+	
+	var v = data.get_string()
+	if v != "v0.1":
+		d("cannot unserialze data version is "+v+" but must be v0.1")
+		return false
+	d("unserialze data version "+v)
+	
+	field_scale = data.get_float()
+	height_scale = data.get_float()
+	var _size:Vector2i
+	_size.x = data.get_u16()
+	_size.y = data.get_u16()
+	size = _size
+	init()
+	
+	var n
+	for node in nodes:
+		node.unserialize( data )
+	
+	var modfield_count = data.get_u8()
+	var mf:VFNModField
+	for i in modfield_count:
+		mf = add_mod_field("")
+		mf.unserialize( data )
+	d("extracted "+str(modfield_count)+" modfields")
+
 
 func ______DEBUG():
 	pass

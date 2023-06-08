@@ -178,6 +178,11 @@ func ______CALCULATION():
 	pass
 
 
+## kills the running calculation thread
+func stop_calculation():
+	_kill_thread = true
+
+
 ## calculate the field solution in a thread, add a callback to be called if finished
 func calculate_threaded( callback = null, kill_existing_thread:bool=true ):
 	if thread and thread.is_alive():

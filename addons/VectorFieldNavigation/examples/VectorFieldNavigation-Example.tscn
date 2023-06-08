@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://bcvvvevh62vfq" path="res://addons/VectorFieldNavigation/examples/unit.tscn" id="2_eruqq"]
 [ext_resource type="Script" path="res://addons/VectorFieldNavigation/examples/GUI.gd" id="2_gdncv"]
 [ext_resource type="Script" path="res://addons/VectorFieldNavigation/classes/VFNMap.gd" id="4_n068j"]
-[ext_resource type="Environment" path="res://default_env.tres" id="6_5pmrx"]
+[ext_resource type="Environment" uid="uid://m4fyiam5c8q0" path="res://default_env.tres" id="6_5pmrx"]
 [ext_resource type="Script" path="res://addons/VectorFieldNavigation/examples/Portal.gd" id="7_00jh6"]
 
 [sub_resource type="HeightMapShape3D" id="HeightMapShape3D_v1r8j"]

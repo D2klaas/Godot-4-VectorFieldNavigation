@@ -43,3 +43,29 @@ func _init():
 	connections.resize(8)
 
 
+##serialize this object into buffer stream
+func serialize( data:StreamPeer ):
+	data.put_8(int(disabled))
+	data.put_float(height)
+	data.put_u8(connections.size())
+	var cs:Array = []
+	for c in connections:
+		if c:
+			data.put_8(1)
+			c.serialize( data )
+		else:
+			data.put_8(-1)
+
+
+##unserialize this object from buffer stream
+func unserialize( data:StreamPeer ):
+	disabled = data.get_u8()
+	height = data.get_float()
+	var connection_count = data.get_u8()
+	
+	for i in connection_count:
+		if data.get_8() == 1:
+			if i < 8:
+				connections[i].unserialize( data )
+			else:
+				map.add_portal( pos, pos ).unserialize( data )

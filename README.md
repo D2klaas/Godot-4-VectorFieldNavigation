@@ -2,7 +2,7 @@
 
 **This project is currently in an early stage. Please report any issues you encounter! Comments and suggestions also appreciated !**
 
-![alt text](https://github.com/D2klaas/Godot-4-VectorFieldNavigation/blob/main/addons/VectorFieldNavigation/vfn_icon.svg?raw=true)
+<img src="https://github.com/D2klaas/Godot-4-VectorFieldNavigation/blob/main/addons/VectorFieldNavigation/vfn_icon.svg?raw=true"/>
 
 This addon add's another pathfinding method besides astar and navmesh-navigation to Godot 4.
 

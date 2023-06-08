@@ -1,8 +1,10 @@
 # Godot-4-VectorFieldNavigation
 
-**This project is currently in an early stage. Please report any issues you encounter! Comments and suggestions also appreciated !**
 
-<img style="width:33%;float:left" src="https://github.com/D2klaas/Godot-4-VectorFieldNavigation/blob/main/addons/VectorFieldNavigation/vfn_icon.svg?raw=true"/>This addon add's another pathfinding method besides astar and navmesh-navigation to Godot 4.
+
+<img style="width:33%;float:left:margin-right: 2em" src="https://github.com/D2klaas/Godot-4-VectorFieldNavigation/blob/main/addons/VectorFieldNavigation/vfn_icon.svg?raw=true"/>**This project is currently in an early stage. Please report any issues you encounter! Comments and suggestions also appreciated !**
+
+This addon add's another pathfinding method besides astar and navmesh-navigation to Godot 4.
 
 Vector field navigation is espacialy usefull for large hordes or particle pathfinding.
 

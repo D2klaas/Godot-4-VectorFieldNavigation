@@ -2,7 +2,7 @@
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg width="100%" height="100%" viewBox="0 0 256 256" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:1.5;">
     <g transform="matrix(1,0,0,0.885896,0,0)">
-        <path d="M256,28.897C256,12.948 244.529,0 230.4,0L25.6,0C11.471,0 0,12.948 0,28.897L0,260.076C0,276.024 11.471,288.973 25.6,288.973L230.4,288.973C244.529,288.973 256,276.024 256,260.076L256,28.897Z" style="fill:rgb(221,239,249);"/>
+        <path d="M256,43.346C256,19.423 238.794,0 217.6,0L38.4,0C17.206,0 0,19.423 0,43.346L0,245.627C0,269.55 17.206,288.973 38.4,288.973L217.6,288.973C238.794,288.973 256,269.55 256,245.627L256,43.346Z" style="fill:rgb(221,239,249);"/>
     </g>
     <g transform="matrix(1.08548,0,0,1.08548,13.9098,-5.67116)">
         <g transform="matrix(6.96743,0,0,6.96743,-213.635,-450.091)">
@@ -31,13 +31,13 @@
     </g>
     <g transform="matrix(1.53568,0,0,1.53568,22.8616,-253.039)">
         <text x="0.611px" y="306.746px" style="font-family:'EurostileLTStd-Demi', 'Eurostile LT Std', sans-serif;font-weight:600;font-size:12px;fill:rgb(70,128,157);">V<tspan x="8.255px " y="306.746px ">e</tspan>ctor Field Navigation</text>
-        <g transform="matrix(12,0,0,12,63.2208,321.146)">
+        <g transform="matrix(9.76763,0,0,9.76763,64.2309,318.468)">
         </g>
-        <g transform="matrix(12,0,0,12,67.3968,321.146)">
+        <g transform="matrix(9.76763,0,0,9.76763,67.6301,318.468)">
         </g>
-        <g transform="matrix(12,0,0,12,101.657,321.146)">
+        <g transform="matrix(9.76763,0,0,9.76763,95.5166,318.468)">
         </g>
-        <text x="35.645px" y="321.146px" style="font-family:'EurostileLTStd-Demi', 'Eurostile LT Std', sans-serif;font-weight:600;font-size:12px;fill:rgb(70,128,157);">Pathﬁnding</text>
+        <text x="41.785px" y="318.468px" style="font-family:'EurostileLTStd-Demi', 'Eurostile LT Std', sans-serif;font-weight:600;font-size:9.768px;fill:rgb(70,128,157);">Pathﬁnding</text>
     </g>
     <defs>
         <linearGradient id="_Linear1" x1="0" y1="0" x2="1" y2="0" gradientUnits="userSpaceOnUse" gradientTransform="matrix(92.7479,0,0,98.8435,88.0436,72.068)"><stop offset="0" style="stop-color:rgb(70,128,157);stop-opacity:1"/><stop offset="0.56" style="stop-color:rgb(64,178,48);stop-opacity:1"/><stop offset="1" style="stop-color:rgb(62,199,0);stop-opacity:1"/></linearGradient>

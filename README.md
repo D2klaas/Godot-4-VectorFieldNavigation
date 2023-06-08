@@ -2,7 +2,7 @@
 
 **This project is currently in an early stage. Please report any issues you encounter! Comments and suggestions also appreciated !**
 
-![alt text](https://github.com/D2klaas/Godot-4-VectorFieldNavigation/blob/main/addons/VectorFieldNavigation/examples/screenshot.jpg?raw=true)
+![alt text](https://github.com/D2klaas/Godot-4-VectorFieldNavigation/blob/main/addons/VectorFieldNavigation/vfn_icon.svg?raw=true)
 
 This addon add's another pathfinding method besides astar and navmesh-navigation to Godot 4.
 
@@ -20,6 +20,8 @@ Vectorfield navigation (VFN) calculates a navigation solution for all cells (nod
 map. Therefor i doesn't matter where the entity is positioned, there is allways a path to a target and
 therefor the entity dont have to walk predefined waypoints.
 
+![alt text](https://github.com/D2klaas/Godot-4-VectorFieldNavigation/blob/main/addons/VectorFieldNavigation/examples/screenshot.jpg?raw=true)
+
 This VFN addon implements a planar(2D/3D) solution wich can be used in 3D space. Currently it does not 
 support underpaths, bridges or alike. This may be change in future realases, but a real 3D node based 
 solution is more complex and will not be as performant as a "2D" solution. The performance is quit good,
@@ -34,6 +36,7 @@ One of the cool features of this algorythm is that the number of targets does no
 * reasonable fast (as gdscript can)
 * connection-cache (+10% performance)
 * flexible modifier layers for static or dynamic movement penalties
+* serialisation for easy storage of pre-processed maps
 
 ## Install
 Download files and add them to your addons folder in your godot project.\

@@ -39,9 +39,6 @@ func _ready():
 	$scenery/terrain/shape.shape.map_depth = map.size.y
 	$scenery/terrain/shape.position = map.position * -1
 	
-	var buffer = map.serialize()
-	map.unserialize(buffer)
-	
 	# create some units
 	var u
 	var _unit = load("res://addons/VectorFieldNavigation/examples/unit.tscn")

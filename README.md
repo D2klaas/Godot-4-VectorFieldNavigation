@@ -73,6 +73,6 @@ The modfields have great potential to improve the ais behaviour.\
 Let's assume youhave a game where countless hordes of zombies attacking. You, a solider, have to defend your fortifikation.
 
 Usually a pathfinding algorythm provides allways the path with the least effort ... usually the shortes path from a to b.
-![one](/ex_spreading_forces_1.jpg)
+![one](/addons/VectorFieldNavigation/docs/ex_spreading_forces_1.jpg)
 
 

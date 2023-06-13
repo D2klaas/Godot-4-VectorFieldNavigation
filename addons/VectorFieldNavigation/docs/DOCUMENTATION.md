@@ -222,6 +222,18 @@ Field for modifing pathfinding effort.
   sets penalty value on pos
 
 
+* `set_value_from_world( world_pos:Vector3, value:float, clamp:bool=true )`\
+  sets penalty value on world pos
+
+
+* `add_value( pos:Vector2i, value:float )`\
+  adds penalty value on pos
+
+
+* `add_value_from_world( world_pos:Vector3, value:float, clamp:bool=true )`\
+  adds penalty value on world pos
+
+
 * `get_value( pos:Vector2i )`\
   gets penalty value on pos
 
@@ -231,9 +243,8 @@ Field for modifing pathfinding effort.
 
 
 * `blur_fade( f:float )`\
-  **not implemented yet**
-  fades every value in the field, multiplys the value by f\
-  blurs the neighbouring fields
+  blurs the neighbouring fields and\
+  fades every value in the field, multiplys the value by f
 
 
 ### VFNConnection

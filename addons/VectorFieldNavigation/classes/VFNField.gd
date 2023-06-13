@@ -80,7 +80,6 @@ var field_effort_factor:float = 1 :
 
 
 signal thread_finished
-signal thread_failed
 ## the calculation finished successful:bool true/false
 signal calculated
 
@@ -196,16 +195,19 @@ func stop_calculation():
 
 ## calculate the field solution in a thread, add a callback to be called if finished
 func calculate_threaded( callback = null, kill_existing_thread:bool=true ):
-	if thread and thread.is_alive():
-		if kill_existing_thread:
+	if thread:
+		if kill_existing_thread and thread.is_started():
+			emit_signal("calculated",false) # dispatch old callback or else race condition will occure
 			_kill_thread = true
-			await thread_finished
+			await calculated
 		else:
 			return false
+	
+	thread = Thread.new()
+	
 	if callback is Callable:
 		connect("calculated", callback, CONNECT_ONE_SHOT)
 	
-	thread = Thread.new()
 	d("--- start calculation thread")
 	init_fields()
 	thread.start( self.calculate )
@@ -224,11 +226,13 @@ func _on_thread_finished():
 			#release some memory
 			_field_vector = PackedVector3Array()
 			field_open_mask.clear()
+			thread = null
 			emit_signal("calculated", true)
 		else:
 			d("thread failed")
+			thread = null
 			emit_signal("calculated", false)
-		thread = null
+		
 
 
 ## clear the connections cache

@@ -18,7 +18,8 @@ func _physics_process(delta):
 	
 	## when a field is calculated
 	if field:
-		occupied_field.add_value_from_world( global_position, 0.5 )
+		#comes later
+#		occupied_field.add_value_from_world( global_position, 0.5 )
 		#get the smoothed navigation vector for this position
 		vf_vec = field.get_vector_smooth_world(global_position)*vf_force
 		

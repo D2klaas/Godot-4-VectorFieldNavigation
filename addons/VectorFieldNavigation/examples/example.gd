@@ -28,11 +28,14 @@ func _ready():
 	
 	# create a penalty field for edge penalties
 	# keeping entities from gliding along the walls
-	occupied_field = map.add_mod_field("occupied")
-	#occupied_field.upmost = true
-	occupied_field.dynamic = true
 	var penalty_field:VFNModField = map.add_mod_field("margin")
 	penalty_field.upmost = true
+	
+	# here is another penalty field as descriped in the readme
+	# but its for later ... not now
+#	occupied_field = map.add_mod_field("occupied")
+#	occupied_field.dynamic = true
+
 	
 	# add some penalty margin arround cliffs in the created modField
 	map.add_penalty_height_margin(penalty_field,3,10)
@@ -76,7 +79,9 @@ func _on_button_pressed():
 	
 	# if you want to weight the influence of a modfield you can do it like this
 	field.set_modfield("margin",1) # factor 1 is default
-	occupied_field.clear()
+	
+	#comes later
+#	occupied_field.clear()
 	
 	# set gui values to field modifiers
 	field.effort_cutoff = $GUI.effort_cutoff
@@ -110,14 +115,14 @@ func _on_calculated( succesful, field ):
 	if not succesful:
 		return
 	var tex
-#	$VectorMap.update_debug_mesh( field )
-#	tex = ImageTexture.create_from_image(field.get_target_heatmap())
-#	%TargetMap.texture = tex
+	$VectorMap.update_debug_mesh( field )
+	tex = ImageTexture.create_from_image(field.get_target_heatmap())
+	%TargetMap.texture = tex
 	tex = ImageTexture.create_from_image(field.get_penalty_heatmap())
 	%PenaltyMap.texture = tex
-#	tex = ImageTexture.create_from_image(field.get_effort_heatmap())
-#	%EffortMap.texture = tex
-#	$scenery/terrain/mesh.material_override.albedo_texture = %TargetMap.texture
+	tex = ImageTexture.create_from_image(field.get_effort_heatmap())
+	%EffortMap.texture = tex
+	$scenery/terrain/mesh.material_override.albedo_texture = %TargetMap.texture
 	
 	update = true
 
@@ -167,6 +172,8 @@ func create_heightmap_mesh( _x:int, _y:int, heights=null ):
 
 
 func _on_timer_timeout():
+	#comes later
+	return
 	occupied_field.blur_fade(0.8)
 	if update:
 		update = false

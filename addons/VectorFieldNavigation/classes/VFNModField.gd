@@ -39,10 +39,58 @@ func clear():
 ## set the node value at pos
 func set_value( pos:Vector2i, value:float ):
 	var i = pos.x*map.size.x+pos.y
+	
+	if boolean:
+		if round(value) > 0:
+			value = 1
+		else:
+			value = -1
+	
 	if upmost:
-		field[i] = max( field[i], value )
-	else:
+		value = max( field[i], value )
+	
+	field[i] = value
+
+
+## set the node value at pos
+func set_value_from_world( wpos:Vector3, value:float, clamp:bool=true ):
+	var p:Vector3 = map.to_local( wpos )
+	p = p.round() / map.field_scale
+	var n:Vector2i = Vector2i(p.x,p.z)
+	if clamp:
+		n = Vector2i(p.x,p.z).clamp(Vector2i.ZERO,map.size)
+	set_value( n, value )
+
+
+## set the node value at pos
+func add_value( pos:Vector2i, value:float ):
+	var i = pos.x*map.size.x+pos.y
+	
+	if upmost:
+		value = max( field[i], value )
 		field[i] = value
+		return
+	
+	
+	if boolean:
+		if round(value) > 0:
+			value = 1
+		else:
+			value = -1
+		field[i] = value
+		return
+	
+	field[i] += value
+
+
+## set the node value at pos
+func add_value_from_world( wpos:Vector3, value:float, clamp:bool=true ):
+	var p:Vector3 = map.to_local( wpos )
+	p = p.round() / map.field_scale
+	var n:Vector2i = Vector2i(p.x,p.z)
+	if clamp:
+		n = Vector2i(p.x,p.z).clamp(Vector2i.ZERO,map.size)
+	add_value( n, value )
 
 
 ## get the nodes value at pos
@@ -58,7 +106,18 @@ func fade( f:float ):
 
 ## not yet implemented
 func blur_fade( f:float ):
-	pass
+	var _f:float
+	var i:int
+	var _field:PackedFloat32Array = field.duplicate()
+	for x in range(1,map.size.x-1):
+		for y in range(1,map.size.y-1):
+			i = x*map.size.x + y
+			for _x in range(-1,2):
+				for _y in range(-1,2):
+					_field[i] += field[(x+_x)*map.size.x + y+_y]
+			_field[i] /= 9
+	field = _field
+	fade(f)
 
 
 ##serialize this object into buffer stream

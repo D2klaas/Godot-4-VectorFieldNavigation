@@ -2,6 +2,8 @@ extends Node3D
 
 ## the VFN field
 var field:VFNField
+var occupied_field:VFNModField
+var update:bool = false
 
 func _ready():
 	# set default values
@@ -26,6 +28,9 @@ func _ready():
 	
 	# create a penalty field for edge penalties
 	# keeping entities from gliding along the walls
+	occupied_field = map.add_mod_field("occupied")
+	#occupied_field.upmost = true
+	occupied_field.dynamic = true
 	var penalty_field:VFNModField = map.add_mod_field("margin")
 	penalty_field.upmost = true
 	
@@ -45,6 +50,7 @@ func _ready():
 	for i in 100:
 		u = _unit.instantiate()
 		add_child(u)
+		u.occupied_field = occupied_field
 		u.linear_velocity = Vector3(randf_range(-1,1),randf_range(-1,1),randf_range(-1,1)) * 5
 		u.linear_velocity = Vector3(0,0,0)
 		u.position = Vector3(randi_range(10,map.size.x-10),10,randi_range(10,map.size.y-10)) 
@@ -70,6 +76,7 @@ func _on_button_pressed():
 	
 	# if you want to weight the influence of a modfield you can do it like this
 	field.set_modfield("margin",1) # factor 1 is default
+	occupied_field.clear()
 	
 	# set gui values to field modifiers
 	field.effort_cutoff = $GUI.effort_cutoff
@@ -95,20 +102,24 @@ func _on_button_pressed():
 	else:
 		field.add_target( Vector2i(105,15) )
 	
-	field.calculate_threaded( self._on_calculated.bind(field) )
+	update = false
+	field.calculate_threaded( self._on_calculated.bind(field), true )
 
 
 func _on_calculated( succesful, field ):
 	if not succesful:
 		return
-	$VectorMap.update_debug_mesh( field )
-	var tex = ImageTexture.create_from_image(field.get_target_heatmap())
-	%TargetMap.texture = tex
+	var tex
+#	$VectorMap.update_debug_mesh( field )
+#	tex = ImageTexture.create_from_image(field.get_target_heatmap())
+#	%TargetMap.texture = tex
 	tex = ImageTexture.create_from_image(field.get_penalty_heatmap())
 	%PenaltyMap.texture = tex
-	tex = ImageTexture.create_from_image(field.get_effort_heatmap())
-	%EffortMap.texture = tex
-	$scenery/terrain/mesh.material_override.albedo_texture = %TargetMap.texture
+#	tex = ImageTexture.create_from_image(field.get_effort_heatmap())
+#	%EffortMap.texture = tex
+#	$scenery/terrain/mesh.material_override.albedo_texture = %TargetMap.texture
+	
+	update = true
 
 
 func _process(delta):
@@ -153,3 +164,11 @@ func create_heightmap_mesh( _x:int, _y:int, heights=null ):
 	st.generate_normals()
 	st.generate_tangents()
 	return st.commit()
+
+
+func _on_timer_timeout():
+	occupied_field.blur_fade(0.8)
+	if update:
+		update = false
+		field.calculate_threaded( self._on_calculated.bind(field) )
+

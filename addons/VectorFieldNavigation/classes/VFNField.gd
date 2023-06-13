@@ -133,6 +133,17 @@ func add_target( pos:Vector2i, data=null ) -> VFNTarget:
 	return target
 
 
+##adds a target for this field at world position
+##data can be any additional information for this target
+func add_target_from_world( wpos:Vector3, data=null, clamp=true ) -> VFNTarget:
+	var p:Vector3 = map.to_local( wpos )
+	p = p.round() / map.field_scale
+	var n:Vector2i = Vector2i(p.x,p.z)
+	if clamp:
+		n = Vector2i(p.x,p.z).clamp(Vector2i.ZERO,map.size)
+	return add_target( n, data )
+
+
 ## remove a target
 func remove_target( pos ):
 	if pos is Vector2i:
@@ -299,31 +310,34 @@ func calculate():
 	
 	var con_index:int = 0
 	
+	var mf:VFNModField
 	var static_mod_fields:Array
 	var static_mod_fields_weights:Array[float]
 	var dynamic_mod_fields:Array
 	var dynamic_mod_fields_weights:Array[float]
-	for mf in map.mod_fields:
-		if mf.dynamic:
-			if modfield_weights.has(mf.name):
-				if modfield_weights[mf.name] > 0:
-					dynamic_mod_fields.append(mf)
-					dynamic_mod_fields_weights.append(modfield_weights[mf.name])
+	
+	for _mf in map.mod_fields:
+		if _mf.dynamic:
+			if modfield_weights.has(_mf.name):
+				if modfield_weights[_mf.name] > 0:
+					dynamic_mod_fields.append(_mf)
+					dynamic_mod_fields_weights.append(modfield_weights[_mf.name])
 				else:
 					pass
 			else:
-				dynamic_mod_fields.append(mf)
+				dynamic_mod_fields.append(_mf)
 				dynamic_mod_fields_weights.append(1)
 		else:
-			if modfield_weights.has(mf.name):
-				if modfield_weights[mf.name] > 0:
-					static_mod_fields.append(mf)
-					static_mod_fields_weights.append(modfield_weights[mf.name])
+			if modfield_weights.has(_mf.name):
+				if modfield_weights[_mf.name] > 0:
+					static_mod_fields.append(_mf)
+					static_mod_fields_weights.append(modfield_weights[_mf.name])
 				else:
 					pass
 			else:
-				static_mod_fields.append(mf)
+				static_mod_fields.append(_mf)
 				static_mod_fields_weights.append(1)
+	
 	
 	while openlist.size() > 0:
 		steps += 1
@@ -356,10 +370,9 @@ func calculate():
 		
 		# dynamic mod field penaltys for this c_node
 		c_node_ef = 0
-		var mf:VFNModField
 		for i in dynamic_mod_fields.size():
 			mf = dynamic_mod_fields[i]
-			if mf.boolean and round(mf.field[c_index]) != 1:
+			if mf.boolean and mf.field[c_index] == -1:
 				continue
 			c_node_ef += mf.field[c_index] * field_effort_factor * dynamic_mod_fields_weights[i]
 		
@@ -440,7 +453,7 @@ func calculate():
 				#add static mod fields
 				for i in static_mod_fields.size():
 					mf = static_mod_fields[i]
-					if mf.boolean and round(mf.field[c_index]) != 1:
+					if mf.boolean and mf.field[c_index] == -1:
 						connection_cache[cache_index + con_index] = -1
 						continue
 					_ef += mf.field[c_index] * field_effort_factor * static_mod_fields_weights[i]
@@ -492,8 +505,8 @@ func get_aim_world( global_position:Vector3, clamp:bool=true ) -> int:
 
 
 ## get VFNNode for world position
-func get_node_world( global_position:Vector3, clamp:bool=true ) -> VFNNode:
-	var p:Vector3 = map.to_local( global_position )
+func get_node_world( wpos:Vector3, clamp:bool=true ) -> VFNNode:
+	var p:Vector3 = map.to_local( wpos )
 	p = p.round() / map.field_scale
 	var n:Vector2i = Vector2i(p.x,p.z)
 	if clamp:
@@ -506,8 +519,8 @@ func get_node_world( global_position:Vector3, clamp:bool=true ) -> VFNNode:
 
 
 ## get VFNTarget for world position
-func get_target_world( global_position:Vector3, clamp:bool=true ) -> VFNTarget:
-	var p:Vector3 = map.to_local( global_position )
+func get_target_world( wpos:Vector3, clamp:bool=true ) -> VFNTarget:
+	var p:Vector3 = map.to_local( wpos )
 	p = p.round() / map.field_scale
 	var n:Vector2i = Vector2i(p.x,p.z)
 	if clamp:
@@ -519,8 +532,8 @@ func get_target_world( global_position:Vector3, clamp:bool=true ) -> VFNTarget:
 		return index_of_targets[field_target[index]]
 
 
-func get_vector_world( global_position:Vector3, clamp:bool=true ) -> Vector3:
-	var p:Vector3 = map.to_local( global_position )
+func get_vector_world( wpos:Vector3, clamp:bool=true ) -> Vector3:
+	var p:Vector3 = map.to_local( wpos )
 	p = p.round() / map.field_scale
 	var n:Vector2i = Vector2i(p.x,p.z)
 	if clamp:
@@ -533,8 +546,8 @@ func get_vector_world( global_position:Vector3, clamp:bool=true ) -> Vector3:
 
 
 ## get movement vector for world position smoothed by the neighboring fields
-func get_vector_smooth_world( global_position:Vector3, clamp:bool=true  ) -> Vector3:
-	var p:Vector3 = map.to_local( global_position )
+func get_vector_smooth_world( wpos:Vector3, clamp:bool=true  ) -> Vector3:
+	var p:Vector3 = map.to_local( wpos )
 	p = p.round() / map.field_scale
 	var n:Vector2i = Vector2i(p.x,p.z)
 	if clamp:
@@ -544,12 +557,12 @@ func get_vector_smooth_world( global_position:Vector3, clamp:bool=true  ) -> Vec
 		return Vector3(0,0,0)
 	else:
 		var node:VFNNode = map.nodes[index]
-		var d:float = global_position.distance_to(node.world_position)
+		var d:float = wpos.distance_to(node.world_position)
 		var v:Vector3 = field_vector[index]
 		for c in node.connections:
 			if not c:
 				continue
-			d = global_position.distance_to(c.other_node.world_position)
+			d = wpos.distance_to(c.other_node.world_position)
 			v += field_vector[c.other_node.field_index] * ( d / 3 )
 		return v.normalized()
 
@@ -592,12 +605,12 @@ func get_target_heatmap() -> Image:
 
 func get_penalty_heatmap() -> Image:
 	var img:Image = Image.create( map.size.x, map.size.y, false, Image.FORMAT_RGB8 )
-	var c:Color
+	var c:Color = Color.WHITE
 	var ef:float
 	for n in map.nodes:
-		c = Color.WHITE
-		# todo
-#		c.v = n.penalty/20
+		c.v = 1
+		for mf in map.mod_fields:
+			c.v -= mf.get_value(n.pos) * 0.05
 		img.set_pixelv( n.pos, c )
 	return img
 

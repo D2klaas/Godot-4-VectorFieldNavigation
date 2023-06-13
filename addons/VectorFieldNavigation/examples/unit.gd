@@ -7,7 +7,7 @@ var field:VFNField
 var wiggle_force:float = 15
 var vf_vec:Vector3
 var just_teleported:bool = false
-
+var occupied_field:VFNModField
 
 func _ready():
 	$Timer.wait_time = randf_range(0.5,1.0)
@@ -15,8 +15,10 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
+	
 	## when a field is calculated
 	if field:
+		occupied_field.add_value_from_world( global_position, 0.5 )
 		#get the smoothed navigation vector for this position
 		vf_vec = field.get_vector_smooth_world(global_position)*vf_force
 		

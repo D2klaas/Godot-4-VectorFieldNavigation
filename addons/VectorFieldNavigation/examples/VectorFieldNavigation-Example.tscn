@@ -1,8 +1,7 @@
-[gd_scene load_steps=12 format=3 uid="uid://bq1okk6qaxpfr"]
+[gd_scene load_steps=11 format=3 uid="uid://bq1okk6qaxpfr"]
 
 [ext_resource type="Script" path="res://addons/VectorFieldNavigation/examples/example.gd" id="1_l5mr5"]
 [ext_resource type="Texture2D" uid="uid://3mxy8pc7xvjg" path="res://addons/VectorFieldNavigation/examples/heightmap.png" id="2_d7bo2"]
-[ext_resource type="PackedScene" uid="uid://bcvvvevh62vfq" path="res://addons/VectorFieldNavigation/examples/unit.tscn" id="2_eruqq"]
 [ext_resource type="Script" path="res://addons/VectorFieldNavigation/examples/GUI.gd" id="2_gdncv"]
 [ext_resource type="Script" path="res://addons/VectorFieldNavigation/classes/VFNMap.gd" id="4_n068j"]
 [ext_resource type="Environment" uid="uid://m4fyiam5c8q0" path="res://default_env.tres" id="6_5pmrx"]
@@ -23,6 +22,10 @@ texture_filter = 0
 
 [node name="VFN Example Scene" type="Node3D"]
 script = ExtResource("1_l5mr5")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.25
+autostart = true
 
 [node name="GUI" type="Control" parent="."]
 layout_mode = 3
@@ -267,8 +270,6 @@ transform = Transform3D(-1, 6.04793e-08, -6.31268e-08, 0, 0.722086, 0.691803, 8.
 
 [node name="scenery" type="Node3D" parent="."]
 
-[node name="unit" parent="scenery" instance=ExtResource("2_eruqq")]
-
 [node name="terrain" type="StaticBody3D" parent="scenery"]
 
 [node name="shape" type="CollisionShape3D" parent="scenery/terrain"]
@@ -311,6 +312,7 @@ shape = SubResource("BoxShape3D_6hq0x")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="PortalB"]
 mesh = SubResource("BoxMesh_r4fcx")
 
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
 [connection signal="value_changed" from="GUI/MarginContainer2/VBoxContainer/GridContainer/gen_targets" to="GUI" method="_on_gen_targets_value_changed"]
 [connection signal="value_changed" from="GUI/MarginContainer2/VBoxContainer/GridContainer/effort_cutoff" to="GUI" method="_on_effort_cutoff_value_changed"]
 [connection signal="value_changed" from="GUI/MarginContainer2/VBoxContainer/GridContainer/climb_factor" to="GUI" method="_on_climb_factor_value_changed"]

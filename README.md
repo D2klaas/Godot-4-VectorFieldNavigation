@@ -80,8 +80,21 @@ in this example this leads directly into the kill zone ... the narrow obstacles 
 
 ![one](/addons/VectorFieldNavigation/docs/ex_spreading_forces_2.jpg)
 
-If you use a modfield, lets name it "occupy_field" and constantly add a small mount of effort to it for each zombies location 
+If you use a dynamic modfield, lets name it "occupy_field" and constantly add a small mount of effort to it for each zombies location (pink) 
 you are increasing the effort to pathes allready favored by some zombies. This diverts other zombies to avoid the heavly 
-used path of the others.
+used path of the others, leading to much more divers attack pattern.\
 
 ![one](/addons/VectorFieldNavigation/docs/ex_spreading_forces_3.jpg)
+
+To unblock the favorised pathes you can call fade() on the modfield to slowly diminish the increased effort, giving way for another 
+attack on this line.
+
+This technic can also be used for other purposes. Maybe you have placed some turrets on tactical locations, gunning down the zombies from there
+spawnpoint to the fortification. add a dynamic modfield "killzone_field", whenever a zombie gets killed mark the place with a penalty. After
+enough casulties the zombies will avoid this area and try to find a way around. If there is no other way, well, then they will walk on despite the danger.
+
+Also open fields could penaliest for soft or hardcover fields. Making this dependent on range and orientation to the player, enemies will get pretty 
+clever in there movement, making them activly avoid getting gunned down.
+
+Modfields bring a wide range of easy to use possibilities to pathfinding and ai. The examples above could be refined to bring even more complex
+ai behaviour into play.

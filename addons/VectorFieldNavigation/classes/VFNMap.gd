@@ -398,13 +398,12 @@ func update_debug_mesh( field:VFNField=null ):
 	_debug_mesh.mesh.clear_surfaces()
 	_debug_mesh.mesh.surface_begin( Mesh.PRIMITIVE_POINTS )
 	
-	var pos:Vector2i
+
 	var c:Color
-	var index:int
 	for n in nodes:
 		if field:
-			if field.field_final_destination[n.field_index]:
-				c = nodes[field.field_final_destination[n.field_index]].color
+			if field.field_target[n.field_index]:
+				c = nodes[field.field_target[n.field_index]].color
 				c.v = 1.0 - field.field_ef[n.field_index] / field.heighest_ef
 			else:
 				c = Color.GRAY
